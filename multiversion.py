@@ -20,10 +20,10 @@ import imp
 import binascii
 import weakref
 from types import ModuleType
-import __builtin__
+import builtins
 
 
-actual_import = __builtin__.__import__
+actual_import = builtins.__import__
 
 
 space = imp.new_module('multiversion.space')
@@ -117,7 +117,7 @@ def get_cache_key(name, globals):
 def get_internal_name(cache_key):
     """Converts a cache key into an internal space module name."""
     package, version = cache_key
-    return 'multiversion.space.%s___%s' % (package, binascii.hexlify(version))
+    return 'multiversion.space.%s___%s' % (package, binascii.hexlify(version.encode('utf-8')))
 
 
 def rewrite_import_name(name, cache_key):
@@ -183,4 +183,4 @@ def version_import(name, globals=None, locals=None, fromlist=None, level=-1):
     return rv
 
 
-__builtin__.__import__ = version_import
+builtins.__import__ = version_import
